@@ -52,7 +52,7 @@ workflow structure_search {
     // Reference structures are mmCIF as downloaded from RCSB; Foldseek reads both.
     queries = Channel.fromPath("${params.ref_structures}/*.{cif,pdb}", checkIfExists: true).collect()
     db      = Channel.fromPath("${params.dbdir}/foldseek/humanAF*", checkIfExists: true).collect()
-    FOLDSEEK_SEARCH(queries.combine(db))
+    FOLDSEEK_SEARCH(queries, db)
 }
 
 // Stage 5 — pocket detection over the shortlist (one task per structure).
