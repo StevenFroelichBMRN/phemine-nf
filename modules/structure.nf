@@ -34,7 +34,8 @@ process FOLDSEEK_SEARCH {
 process FPOCKET_SCAN {
     tag "${pdb.simpleName}"
     label 'tiny'
-    conda 'bioconda::fpocket=4.1'
+    // 4.1 does not exist on bioconda and the Wave build fails; 4.2.3 is the real build.
+    conda 'bioconda::fpocket=4.2.3'
     publishDir "${params.s3_base}/pockets/raw", mode: params.publish_mode
 
     input:
@@ -97,7 +98,7 @@ PY
 process SMINA_DOCK_PHE {
     tag "${receptor.simpleName}"
     label 'small'
-    conda 'bioconda::smina=2020.12.10 bioconda::openbabel=3.1.1'
+    conda 'bioconda::smina conda-forge::openbabel'
     publishDir "${params.s3_base}/docking", mode: params.publish_mode
 
     input:
