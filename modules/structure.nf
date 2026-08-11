@@ -34,8 +34,9 @@ process FOLDSEEK_SEARCH {
 process FPOCKET_SCAN {
     tag "${pdb.simpleName}"
     label 'tiny'
-    // 4.1 does not exist on bioconda and the Wave build fails; 4.2.3 is the real build.
-    conda 'bioconda::fpocket=4.2.3'
+    // fpocket lives on CONDA-FORGE, not bioconda — a bioconda:: prefix makes the Wave
+    // build fail to resolve. python is needed for the in-script parser.
+    conda 'conda-forge::fpocket=4.2.3 conda-forge::python=3.11'
     publishDir "${params.s3_base}/pockets/raw", mode: params.publish_mode
 
     input:
@@ -98,7 +99,7 @@ PY
 process SMINA_DOCK_PHE {
     tag "${receptor.simpleName}"
     label 'small'
-    conda 'bioconda::smina conda-forge::openbabel'
+    conda 'bioconda::smina conda-forge::openbabel conda-forge::python=3.11'
     publishDir "${params.s3_base}/docking", mode: params.publish_mode
 
     input:
