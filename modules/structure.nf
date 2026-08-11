@@ -6,15 +6,16 @@ process FOLDSEEK_SEARCH {
     publishDir "${params.s3_base}/channels/structure", mode: params.publish_mode
 
     input:
-    tuple path(queries), path(dbfiles)
+    path queries, stageAs: 'qdir/*'
+    path dbfiles
 
     output:
     path 'foldseek_hits.tsv', emit: hits
 
     script:
     """
-    mkdir -p qdir
-    for f in ${queries}; do cp \$f qdir/; done
+    # Both inputs are collected lists; staging queries into qdir/ directly avoids
+    # a combine() that would pair each query with the whole DB list.
     foldseek createdb qdir queryDB
 
     # Exhaustive-ish sensitivity: structural homologs of Phe enzymes are the point,
