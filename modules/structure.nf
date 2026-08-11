@@ -33,7 +33,11 @@ process FOLDSEEK_SEARCH {
 
 process FPOCKET_SCAN {
     tag "${pdb.simpleName}"
-    label 'tiny'
+    // Large multi-domain AlphaFold models OOM at 2 GB (exit 174); retry with more.
+    cpus   = 1
+    memory = { 4.GB * task.attempt }
+    errorStrategy = { task.attempt <= 3 ? 'retry' : 'ignore' }
+    maxRetries 3
     // fpocket lives on CONDA-FORGE, not bioconda — a bioconda:: prefix makes the Wave
     // build fail to resolve. python is needed for the in-script parser.
     conda 'conda-forge::fpocket=4.2.3 conda-forge::python=3.11'
