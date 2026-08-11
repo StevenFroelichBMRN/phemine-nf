@@ -49,7 +49,8 @@ workflow pfam_scan {
 
 // Stage 4 — structural remote-homology channel.
 workflow structure_search {
-    queries = Channel.fromPath("${params.ref_structures}/*.pdb", checkIfExists: true).collect()
+    // Reference structures are mmCIF as downloaded from RCSB; Foldseek reads both.
+    queries = Channel.fromPath("${params.ref_structures}/*.{cif,pdb}", checkIfExists: true).collect()
     db      = Channel.fromPath("${params.dbdir}/foldseek/humanAF*", checkIfExists: true).collect()
     FOLDSEEK_SEARCH(queries.combine(db))
 }
