@@ -39,8 +39,10 @@ process FETCH_PROTEOME_ANNOTATION {
     def q = params.uniprot_query.replaceAll(' ', '+')
     def fields = [
         'accession','id','protein_name','gene_primary','length','ec',
+        // NB: 'ft_metal' was retired from the UniProt API (400 Invalid fields parameter);
+        // metal-binding is reported under ft_binding now.
         'cc_catalytic_activity','cc_cofactor','ft_binding','ft_act_site','ft_site',
-        'ft_metal','ft_transmem','cc_subcellular_location','go_f','go_p',
+        'ft_transmem','cc_subcellular_location','go_f','go_p',
         'xref_pfam','xref_interpro','xref_supfam','xref_gene3d',
         'xref_pdb','xref_alphafolddb','xref_chembl','xref_drugbank',
         'cc_similarity','protein_families','rhea','cc_function'
@@ -61,6 +63,8 @@ process FETCH_PROTEOME_ANNOTATION {
 
 process FETCH_AFDB {
     label 'medium'
+    // 5.1 GB tar -> ~23k gzipped PDBs; the default Batch scratch is not enough.
+    disk 120.GB
     conda 'conda-forge::curl conda-forge::tar conda-forge::gzip'
     publishDir "${params.outdir}/afdb", mode: params.publish_mode
 
